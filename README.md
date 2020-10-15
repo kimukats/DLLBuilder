@@ -3,6 +3,11 @@ UnityEditor上からDLLを生成する為のUnityEditor拡張クラスです。
  
 □初めに
 
+本プロジェクトはUnity2017以降では動作しません。
+[UnityDllBuilderKun](https://github.com/kimukats/UnityDllBuilderKun)をご使用下さい。
+
+
+
 必要となるのはDllBuilderWindow.csのみです。
 各自のプロジェクトのEditorフォルダーにこのファイルを放り込んで使用して下さい。
 Macを所有していない為、現在対応している環境はWindowsのみです。
