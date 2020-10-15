@@ -67,26 +67,31 @@ public class DLLBuilderWindow : ScriptableWizard
             System.IO.Directory.CreateDirectory(outputPath);
         }
 
+        var process = new System.Diagnostics.Process();
+        process.StartInfo.FileName = "\"" + m_unityEditorDir + "/Data/Mono/bin/smcs.bat\"";
+        process.StartInfo.Arguments = "";
+
+        if (m_isUseUnityEngineDLL)
+        {
+            process.StartInfo.Arguments += " -r:\"" + m_unityEditorDir + "/Data/Managed/UnityEngine.dll\"";
+        }
+        if (m_isUseUnityEditorDLL)
+        {
+            process.StartInfo.Arguments += " -r:\"" + m_unityEditorDir + "/Data/Managed/UnityEditor.dll\"";
+        }
+        string sources = "";
+        string dllName = "";
         foreach (var obj in Selection.objects)
         {   
             var assetPath = AssetDatabase.GetAssetPath(obj);
             var fnameBase = System.IO.Path.GetFileNameWithoutExtension(assetPath);
-            var process = new System.Diagnostics.Process();
-            process.StartInfo.FileName = "\"" + m_unityEditorDir + "/Data/Mono/bin/smcs.bat\"";
-            process.StartInfo.Arguments = "";
-            if (m_isUseUnityEngineDLL)
-            {
-                process.StartInfo.Arguments += " -r:\"" + m_unityEditorDir + "/Data/Managed/UnityEngine.dll\"";
-            }
-            if (m_isUseUnityEditorDLL)
-            {
-                process.StartInfo.Arguments += " -r:\"" + m_unityEditorDir + "/Data/Managed/UnityEditor.dll\"";
-            }
-            process.StartInfo.Arguments += " -target:library -out:" + outputPath + "/" + fnameBase + ".dll " + projectPath + "/" + assetPath;
-            //Debug.Log(process.StartInfo.FileName + " " + process.StartInfo.Arguments);
-            process.Start();
-            process.WaitForExit();
+            dllName = fnameBase;
+            sources += projectPath + "/" + assetPath + " ";
         }
+        process.StartInfo.Arguments += " -target:library -out:" + outputPath + "/" + dllName + ".dll " + sources;
+        //Debug.Log(process.StartInfo.FileName + " " + process.StartInfo.Arguments);
+        process.Start();
+        process.WaitForExit();
     }
 }
 #endif
